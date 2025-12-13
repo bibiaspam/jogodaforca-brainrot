@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jogo da Forca Fofo</title>
+  <title>Jogo da Forca</title>
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -78,7 +78,7 @@
   </style>
 </head>
 <body>
-  <h1>Jogo da Forca Fofo</h1>
+  <h1>Jogo da Forca</h1>
   <div class="game-container">
     <div class="word" id="wordDisplay">_ _ _ _ _</div>
     <input type="text" id="letterInput" maxlength="1">
@@ -116,18 +116,18 @@
         for (let i = 0; i < word.length; i++) {
           if (word[i] === guess) guessedWord[i] = guess;
         }
-        message.textContent = 'Acertou! 😸';
+        message.textContent = 'Acertou!';
       } else {
         attempts--;
-        message.textContent = 'Errou! ❌';
+        message.textContent = 'Errou!';
       }
 
       updateDisplay();
 
       if (!guessedWord.includes('_')) {
-        message.textContent = 'Parabéns!! Você adivinhou a palavra: ' + word + ' 🎉';
+        message.textContent = 'Parabéns!! Você adivinhou a palavra: ' + word;
       } else if (attempts === 0) {
-        message.textContent = 'Fim de jogo! A palavra era: ' + word + ' 💔';
+        message.textContent = 'Fim de jogo! A palavra era: ' + word;
       }
     }
 

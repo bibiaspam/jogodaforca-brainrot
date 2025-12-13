@@ -7,146 +7,136 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Press Start 2P', cursive;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Press Start 2P', cursive;
+}
 
-    body {
-        width: 100vw;
-        height: 100vh;
-        background: url("JOGO DA FORCA.png") no-repeat center center;
-        background-size: cover;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+body {
+    width: 100vw;
+    height: 100vh;
+    background: url("JOGO DA FORCA.png") no-repeat center center;
+    background-size: cover;
+    overflow: hidden;
+}
 
-    .overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.55);
-    }
+/* BOTÃO INVISÍVEL SOBRE O BOTÃO DA IMAGEM */
+#startButton {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    transform: translate(-50%, -50%);
+    width: 260px;
+    height: 70px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
 
-    .game-ui {
-        position: relative;
-        text-align: center;
-        color: white;
-        z-index: 2;
-    }
+/* HUD DO JOGO */
+#game {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: white;
+    display: none;
+}
 
-    .word {
-        margin-top: 40px;
-        font-size: 28px;
-        letter-spacing: 12px;
-    }
+#word {
+    font-size: 26px;
+    letter-spacing: 12px;
+}
 
-    input {
-        margin-top: 30px;
-        padding: 12px;
-        width: 80px;
-        font-size: 20px;
-        text-align: center;
-        border: none;
-        outline: none;
-    }
+input {
+    margin-top: 15px;
+    padding: 10px;
+    width: 80px;
+    text-align: center;
+    font-size: 18px;
+}
 
-    button {
-        display: block;
-        margin: 25px auto;
-        padding: 18px 45px;
-        background: #f5c400;
-        border: 4px solid #000;
-        font-size: 16px;
-        cursor: pointer;
-    }
+.message {
+    margin-top: 10px;
+    font-size: 14px;
+}
 
-    button:hover {
-        background: #ffe44d;
-    }
-
-    .message {
-        margin-top: 20px;
-        font-size: 14px;
-        min-height: 30px;
-    }
-
-    .attempts {
-        margin-top: 10px;
-        font-size: 14px;
-        color: #ff5555;
-    }
+.attempts {
+    margin-top: 5px;
+    color: #ff5555;
+}
 </style>
 </head>
+
 <body>
 
-<div class="overlay"></div>
+<!-- BOTÃO SOBRE A IMAGEM -->
+<button id="startButton" onclick="startGame()"></button>
 
-<div class="game-ui">
-    <div class="word" id="wordDisplay"></div>
-
-    <input type="text" id="guessInput" maxlength="1">
-
-    <button onclick="makeGuess()">LET'S PLAY!</button>
-
+<!-- HUD -->
+<div id="game">
+    <div id="word"></div>
+    <input id="guess" maxlength="1">
     <div class="message" id="message"></div>
     <div class="attempts" id="attempts"></div>
 </div>
 
 <script>
-    // ===== SCRIPT ORIGINAL (adaptado do Python) =====
+const wordBank = ['rizz', 'ohio', 'sigma', 'tiktok', 'skibidi'];
+let word, guessedWord, attempts;
 
-    const wordBank = ['rizz', 'ohio', 'sigma', 'tiktok', 'skibidi'];
-    let word = wordBank[Math.floor(Math.random() * wordBank.length)];
-    let guessedWord = Array(word.length).fill('_');
-    let attempts = 10;
+const wordDiv = document.getElementById('word');
+const guessInput = document.getElementById('guess');
+const message = document.getElementById('message');
+const attemptsDiv = document.getElementById('attempts');
+const gameDiv = document.getElementById('game');
 
-    const wordDisplay = document.getElementById('wordDisplay');
-    const message = document.getElementById('message');
-    const attemptsDisplay = document.getElementById('attempts');
-    const input = document.getElementById('guessInput');
+function startGame() {
+    word = wordBank[Math.floor(Math.random() * wordBank.length)];
+    guessedWord = Array(word.length).fill('_');
+    attempts = 10;
 
-    function updateDisplay() {
-        wordDisplay.textContent = guessedWord.join(' ');
-        attemptsDisplay.textContent = 'Attempts left: ' + attempts;
+    gameDiv.style.display = 'block';
+    update();
+}
+
+function update() {
+    wordDiv.textContent = guessedWord.join(' ');
+    attemptsDiv.textContent = 'Tentativas: ' + attempts;
+}
+
+guessInput.addEventListener('input', () => {
+    const guess = guessInput.value.toLowerCase();
+    guessInput.value = '';
+
+    if (!guess) return;
+
+    if (word.includes(guess)) {
+        for (let i = 0; i < word.length; i++) {
+            if (word[i] === guess) guessedWord[i] = guess;
+        }
+        message.textContent = 'Boa!';
+    } else {
+        attempts--;
+        message.textContent = 'Errou!';
     }
 
-    updateDisplay();
+    update();
 
-    function makeGuess() {
-        const guess = input.value.toLowerCase();
-        input.value = '';
-
-        if (!guess) return;
-
-        if (word.includes(guess)) {
-            for (let i = 0; i < word.length; i++) {
-                if (word[i] === guess) {
-                    guessedWord[i] = guess;
-                }
-            }
-            message.textContent = 'Great guess!';
-        } else {
-            attempts--;
-            message.textContent = 'Wrong guess!';
-        }
-
-        updateDisplay();
-
-        if (!guessedWord.includes('_')) {
-            message.textContent = 'Congratulations!! You guessed the word: ' + word;
-            input.disabled = true;
-        }
-
-        if (attempts === 0 && guessedWord.includes('_')) {
-            message.textContent = "You've run out of attempts! The word was: " + word;
-            input.disabled = true;
-        }
+    if (!guessedWord.includes('_')) {
+        message.textContent = 'Você venceu! Palavra: ' + word;
+        guessInput.disabled = true;
     }
+
+    if (attempts === 0) {
+        message.textContent = 'Perdeu! Palavra: ' + word;
+        guessInput.disabled = true;
+    }
+});
 </script>
 
 </body>
 </html>
-

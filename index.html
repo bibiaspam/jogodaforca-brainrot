@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Jogo da Forca</title>
+<style>
+    body {
+        font-family: Arial;
+        background: #f2f2f2;
+        text-align: center;
+        padding-top: 40px;
+    }
+
+    #word {
+        font-size: 32px;
+        letter-spacing: 10px;
+    }
+
+    input {
+        font-size: 20px;
+        padding: 5px;
+        width: 40px;
+        text-align: center;
+    }
+
+    button {
+        font-size: 18px;
+        padding: 8px 20px;
+        margin-top: 10px;
+    }
+
+    #message {
+        margin-top: 20px;
+        font-size: 22px;
+        color: #333;
+    }
+</style>
+</head>
+<body>
+
+<h1>Jogo da Forca</h1>
+
+<p id="word">_ _ _ _</p>
+
+<input id="guess" maxlength="1">
+<button onclick="guessLetter()">Chutar</button>
+
+<p id="message"></p>
+
+<script>
+    let words = ["rizz", "ohio", "sigma", "tiktok", "skibidi"];
+    let word = words[Math.floor(Math.random() * words.length)];
+    let guessed = Array(word.length).fill("_");
+    let attempts = 10;
+
+    document.getElementById("word").innerText = guessed.join(" ");
+
+    function guessLetter() {
+        const letter = document.getElementById("guess").value.toLowerCase();
+        document.getElementById("guess").value = "";
+
+        if (letter.length !== 1 || !letter.match(/[a-z]/i)) {
+            document.getElementById("message").innerText = "Digite apenas UMA letra!";
+            return;
+        }
+
+        let found = false;
+
+        for (let i = 0; i < word.length; i++) {
+            if (word[i] === letter) {
+                guessed[i] = letter;
+                found = true;
+            }
+        }
+
+        if (found) {
+            document.getElementById("message").innerText = "Acertou!";
+        } else {
+            attempts--;
+            document.getElementById("message").innerText =
+                "Errou! Tentativas restantes: " + attempts;
+        }
+
+        document.getElementById("word").innerText = guessed.join(" ");
+
+        if (!guessed.includes("_")) {
+            document.getElementById("message").innerText =
+                "Você venceu! A palavra era: " + word;
+        }
+
+        if (attempts <= 0) {
+            document.getElementById("message").innerText =
+                "Perdeu! A palavra era: " + word;
+        }
+    }
+</script>
+
+</body>
+</html>
